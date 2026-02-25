@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { Prisma } from "@prisma/client";
+import path from "path";
 import { ZodError } from "zod";
 import { applicantsService } from "./applicants.service";
 import {
@@ -62,14 +63,33 @@ export const applicantsController = {
     if (!req.file) {
       return res.status(400).json({ success: false, error: "Resume file is required" });
     }
-    const resumeUrl = `/uploads/resumes/${encodeURIComponent(req.file.filename)}`;
+    const asset = await applicantsService.createResumeAsset(req.file);
+    const resumeUrl = `/api/applicants/resumes/${encodeURIComponent(asset.id)}`;
     return res.status(201).json({
       success: true,
       data: {
         resumeUrl,
-        resumeName: req.file.originalname,
+        resumeName: asset.fileName,
       },
     });
+  },
+
+  async downloadResume(req: Request, res: Response) {
+    const assetId = readParam(req.params.assetId);
+    if (!assetId) {
+      return res.status(400).json({ success: false, error: "Resume asset id is required" });
+    }
+
+    const asset = await applicantsService.getResumeAsset(assetId);
+    if (!asset) {
+      return res.status(404).json({ success: false, error: "Resume not found" });
+    }
+
+    const safeFileName = path.basename(asset.fileName || "resume.pdf");
+    res.setHeader("Content-Type", asset.mimeType || "application/pdf");
+    res.setHeader("Content-Disposition", `inline; filename="${safeFileName.replace(/"/g, "")}"`);
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+    return res.status(200).send(asset.content);
   },
 
   async updateStage(req: Request, res: Response) {

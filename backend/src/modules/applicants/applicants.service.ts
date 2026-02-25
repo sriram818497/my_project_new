@@ -72,6 +72,7 @@ const parseStageHistory = (value: Prisma.JsonValue | null | undefined): StageHis
 };
 
 const toJson = (value: unknown) => value as Prisma.InputJsonValue;
+const idPart = () => Math.random().toString(36).slice(2, 8);
 
 const mapApplicant = (applicant: {
   id: string;
@@ -126,6 +127,40 @@ const mapApplicant = (applicant: {
 });
 
 export const applicantsService = {
+  async createResumeAsset(file: Express.Multer.File) {
+    const extMatch = (file.originalname || "").match(/\.([a-zA-Z0-9]+)$/);
+    const extGroup = extMatch?.[1];
+    const ext = extGroup ? `.${extGroup.toLowerCase()}` : ".pdf";
+    const assetId = `res-${Date.now().toString(36)}-${idPart()}`;
+    const safeName = file.originalname?.trim() || `resume${ext}`;
+
+    return prisma.resumeAsset.create({
+      data: {
+        id: assetId,
+        fileName: safeName,
+        mimeType: file.mimetype || "application/pdf",
+        fileSize: file.size ?? file.buffer.length,
+        content: Buffer.from(file.buffer),
+      },
+      select: {
+        id: true,
+        fileName: true,
+      },
+    });
+  },
+
+  async getResumeAsset(id: string) {
+    return prisma.resumeAsset.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        fileName: true,
+        mimeType: true,
+        content: true,
+      },
+    });
+  },
+
   async getAll() {
     const data = await prisma.applicant.findMany({
       orderBy: { appliedAt: "desc" },

@@ -97,6 +97,17 @@ model Applicant {
   @@map("applicants")
 }
 
+model ResumeAsset {
+  id        String   @id @db.VarChar(80)
+  fileName  String   @map("file_name") @db.VarChar(255)
+  mimeType  String   @map("mime_type") @db.VarChar(120)
+  fileSize  Int      @map("file_size")
+  content   Bytes    @db.LongBlob
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("resume_assets")
+}
+
 model RightsRequest {
   id        String              @id @db.VarChar(40)
   payload   Json
