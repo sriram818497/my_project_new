@@ -12,6 +12,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "seed:admin": "tsx src/scripts/seedAdmin.ts",
+    "seed:jobs": "tsx src/scripts/seedJobs.ts",
     "test": "echo \"No tests configured yet\""
   },
   "keywords": [],

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Eye, FileText, BarChart2, Shield, CheckCircle, Search, GitBranch, Database, Cpu, ClipboardCheck, Globe, Zap, UserCheck, Mail, AlertTriangle, Award } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -139,13 +140,33 @@ const bottomSolutions = [
   }
 ];
 
+const toProductSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryFilter = searchParams.get("category");
+  const productFilter = searchParams.get("product");
 
   const filteredStages = categoryFilter
     ? stages.filter(s => s.id === categoryFilter)
     : stages;
+
+  useEffect(() => {
+    if (!productFilter) return;
+    const element = document.getElementById(`product-${productFilter}`);
+    if (!element) return;
+
+    const timer = window.setTimeout(() => {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+
+    return () => window.clearTimeout(timer);
+  }, [productFilter, filteredStages.length]);
 
   const handleFilter = (id: string | null) => {
     if (id) {
@@ -269,7 +290,11 @@ const Products = () => {
                     to={product.solutionLink}
                     className="block h-full"
                   >
+                    {(() => {
+                      const productSlug = toProductSlug(product.name);
+                      return (
                     <motion.div
+                      id={`product-${productSlug}`}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
@@ -290,6 +315,8 @@ const Products = () => {
                         <ArrowRight className="ml-1 w-4 h-4" />
                       </div>
                     </motion.div>
+                      );
+                    })()}
                   </Link>
                 ))}
               </div>

@@ -21,6 +21,8 @@ export interface EventRegistration {
 type Listener = () => void;
 
 const UPDATE_EVENT = "proteccio:event-registrations-updated";
+const STORAGE_KEY = "proteccio:event-registrations-cache:v1";
+const ALLOW_CLIENT_FALLBACK = import.meta.env.DEV;
 const listeners = new Set<Listener>();
 
 let cache: EventRegistration[] = [];
@@ -29,6 +31,30 @@ let isRefreshing = false;
 
 const sortByRecent = (value: EventRegistration[]) =>
   [...value].sort((a, b) => new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime());
+
+const readStore = (): EventRegistration[] => {
+  if (!ALLOW_CLIENT_FALLBACK) return [];
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return sortByRecent(parsed as EventRegistration[]);
+  } catch {
+    return [];
+  }
+};
+
+const persistStore = (value: EventRegistration[]) => {
+  if (!ALLOW_CLIENT_FALLBACK) return;
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+  } catch {
+    // Ignore storage failures (quota/private mode).
+  }
+};
 
 const notify = () => {
   listeners.forEach((listener) => listener());
@@ -39,6 +65,7 @@ const notify = () => {
 
 const writeStore = (value: EventRegistration[]) => {
   cache = sortByRecent(value);
+  persistStore(cache);
   notify();
 };
 
@@ -50,7 +77,7 @@ const readApiRows = (payload: unknown): EventRegistration[] => {
 };
 
 const hydrate = () => {
-  cache = [];
+  cache = readStore();
   initialized = true;
 };
 

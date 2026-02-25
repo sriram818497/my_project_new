@@ -47,27 +47,33 @@ const Footer = () => {
   // Define product links here or fetch from a shared source if preferred
   const productsList = [
     {
-      label: "RoPA Management Application (RMA)",
-      path: "/products",
+      label: "Data Discovery & Classification (DD&DC)",
+      path: "/products?category=know&product=data-discovery-classification-dd-dc",
     },
     {
-      label: "Consent Management Application (CMA)",
-      path: "/products",
-    },
-    { label: "Privacy by Design (PbD)", path: "/products" },
-    { label: "DPIA Management (DM)", path: "/products" },
-    { label: "TPRM Management (TM)", path: "/products" },
-    { label: "Datavory Application", path: "/products" },
-    { label: "Data Mapping", path: "/products" },
-    { label: "DSR Management", path: "/products" },
-    { label: "Data Breach Management", path: "/products" },
-    {
-      label: "ISO ISMS 27001 Assessments (ISO Management)",
-      path: "/products",
+      label: "Data Mapping",
+      path: "/products?category=know&product=data-mapping",
     },
     {
-      label: "ISO PIMS 27701 Assessments (ISO Management)",
-      path: "/products",
+      label: "Records of Processing Activities (RoPA)",
+      path: "/products?category=document&product=records-of-processing-activities-ropa",
+    },
+    {
+      label: "Privacy by Design for Applications (PbD)",
+      path: "/products?category=document&product=privacy-by-design-for-applications-pbd",
+    },
+    { label: "New Project DPIA", path: "/products?category=assess&product=new-project-dpia" },
+    {
+      label: "Third-Party Risk Management (TPRM)",
+      path: "/products?category=assess&product=third-party-risk-management-tprm",
+    },
+    { label: "Free Assessment Tools", path: "/products?category=assess&product=free-assessment-tools" },
+    { label: "Consent Management", path: "/products?category=control&product=consent-management" },
+    { label: "DSR Request Management", path: "/products?category=control&product=dsr-request-management" },
+    { label: "Data Breach Management", path: "/products?category=control&product=data-breach-management" },
+    {
+      label: "Audit & Evidence Readiness",
+      path: "/products?category=prove&product=audit-evidence-readiness",
     },
   ];
 

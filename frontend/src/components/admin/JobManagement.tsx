@@ -47,7 +47,7 @@ const emptyForm: JobFormState = {
   responsibilitiesText: "",
   qualificationsText: "",
   desiredSkillsText: "",
-  status: "draft",
+  status: "published",
 };
 
 const parseLines = (value: string) =>
@@ -341,7 +341,13 @@ const JobManagement = () => {
   };
 
   const handleSave = async () => {
-    if (!form.title || !form.department || !form.location || !form.roleOverview || !form.aboutRole) {
+    const title = form.title.trim();
+    const department = form.department.trim();
+    const location = form.location.trim();
+    const roleOverview = form.roleOverview.trim();
+    const aboutRole = form.aboutRole.trim();
+
+    if (!title || !department || !location || !roleOverview || !aboutRole) {
       setFormError("Please fill all required fields: title, department, location, role overview, and about role.");
       return;
     }
@@ -354,6 +360,14 @@ const JobManagement = () => {
     setFormError("");
     const payload = {
       ...form,
+      title,
+      department,
+      location,
+      roleOverview,
+      aboutRole,
+      type: form.type.trim() || "Full-time",
+      education: form.education.trim() || undefined,
+      experience: form.experience.trim() || undefined,
       skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
       salaryMin: form.salaryMin ? Number(form.salaryMin) : undefined,
       salaryMax: form.salaryMax ? Number(form.salaryMax) : undefined,
@@ -384,8 +398,14 @@ const JobManagement = () => {
       });
       await refresh();
       closeForm(true);
-    } catch {
-      setFormError("Unable to save job right now. Please try again.");
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      const backendMessage = (error as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      if (status === 401) {
+        setFormError("Session expired or unauthorized. Please sign out and sign in again, then retry.");
+        return;
+      }
+      setFormError(backendMessage || "Unable to save job right now. Please try again.");
     } finally {
       setSavingJob(false);
     }

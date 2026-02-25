@@ -9,6 +9,8 @@ import type {
 type Listener = () => void;
 
 const UPDATE_EVENT = "proteccio:communication-preferences-updated";
+const STORAGE_KEY = "proteccio:communication-preferences-cache:v1";
+const ALLOW_CLIENT_FALLBACK = import.meta.env.DEV;
 const listeners = new Set<Listener>();
 
 const defaultPreferences: CommunicationPreferences = {
@@ -27,8 +29,33 @@ const deriveStatus = (preferences: CommunicationPreferences): CommunicationPrefe
 const sortByRecent = (records: CommunicationPreferenceRecord[]) =>
   [...records].sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
 
+const readStore = (): CommunicationPreferenceRecord[] => {
+  if (!ALLOW_CLIENT_FALLBACK) return [];
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return sortByRecent(parsed as CommunicationPreferenceRecord[]);
+  } catch {
+    return [];
+  }
+};
+
+const persistStore = (records: CommunicationPreferenceRecord[]) => {
+  if (!ALLOW_CLIENT_FALLBACK) return;
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  } catch {
+    // Ignore storage failures (quota/private mode).
+  }
+};
+
 const writeStore = (records: CommunicationPreferenceRecord[]) => {
   cache = sortByRecent(records);
+  persistStore(cache);
   listeners.forEach((listener) => listener());
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent(UPDATE_EVENT));
@@ -64,7 +91,7 @@ const readApiRows = (payload: unknown): CommunicationPreferenceRecord[] => {
 };
 
 const hydrate = () => {
-  cache = [];
+  cache = readStore();
   initialized = true;
 };
 

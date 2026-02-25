@@ -1,9 +1,11 @@
 import axios from "axios";
 import type { RecruitmentJob } from "../types/recruitment";
+import { JOBS_SEED } from "../data/jobsSeed";
 
 const STORAGE_KEY = "proteccio-jobs";
 const UPDATE_EVENT = "proteccio:jobs-updated";
 const JOB_CODE_PATTERN = /^[A-Z]{3}-\d{4}-\d{3}$/;
+const ALLOW_CLIENT_FALLBACK = import.meta.env.DEV;
 type Listener = () => void;
 const listeners = new Set<Listener>();
 
@@ -70,6 +72,23 @@ const safeReadJobFromResponse = (payload: unknown): RecruitmentJob | null => {
   return maybe.data as RecruitmentJob;
 };
 
+const seedJobs = () => JOBS_SEED.map((job) => ({ ...job }));
+
+const sortJobsByRecent = (jobs: RecruitmentJob[]) =>
+  [...jobs].sort((a, b) => {
+    const ta = Date.parse(a.createdAt || a.publishedAt || a.postedDate || "") || 0;
+    const tb = Date.parse(b.createdAt || b.publishedAt || b.postedDate || "") || 0;
+    return tb - ta;
+  });
+
+const readPublishedFromFallbacks = () => {
+  if (!ALLOW_CLIENT_FALLBACK) return [];
+  const cached = safeReadJobsFromStorage();
+  const cachedPublished = cached.filter((job) => job.status === "published");
+  if (cachedPublished.length > 0) return cachedPublished;
+  return seedJobs().filter((job) => job.status === "published");
+};
+
 export const jobsService = {
   subscribe(listener: Listener) {
     listeners.add(listener);
@@ -80,24 +99,31 @@ export const jobsService = {
     try {
       const response = await axios.get("/api/jobs");
       const jobs = safeReadJobsFromResponse(response.data);
-      if (jobs.length > 0) {
-        writeJobsToStorage(jobs);
-      }
-      return jobs;
+      writeJobsToStorage(jobs);
+      return sortJobsByRecent(jobs);
     } catch (error) {
       console.error("Failed to fetch jobs from API. Falling back to local cache.", error);
-      return safeReadJobsFromStorage();
+      if (!ALLOW_CLIENT_FALLBACK) return [];
+      const cached = safeReadJobsFromStorage();
+      if (cached.length > 0) return cached;
+      const seeded = seedJobs();
+      writeJobsToStorage(seeded);
+      return seeded;
     }
   },
 
   async getPublishedJobs(): Promise<RecruitmentJob[]> {
     try {
       const response = await axios.get("/api/jobs/published");
-      return safeReadJobsFromResponse(response.data);
+      const published = safeReadJobsFromResponse(response.data);
+      return sortJobsByRecent(published);
     } catch (error) {
       console.error("Failed to fetch published jobs from API. Falling back to cached logic.", error);
+      if (!ALLOW_CLIENT_FALLBACK) return [];
       const all = await this.getAllJobs();
-      return all.filter((job) => job.status === "published");
+      const published = all.filter((job) => job.status === "published");
+      if (published.length > 0) return published;
+      return readPublishedFromFallbacks();
     }
   },
 

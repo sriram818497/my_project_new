@@ -10,6 +10,7 @@ import LanguageSelector from "./LanguageSelector";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [suppressHoverOpen, setSuppressHoverOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
 
@@ -22,6 +23,22 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const closeDropdownOnScroll = () => {
+      if (!activeDropdown) return;
+      setActiveDropdown(null);
+      setSuppressHoverOpen(true);
+    };
+
+    window.addEventListener("scroll", closeDropdownOnScroll, { passive: true });
+    return () => window.removeEventListener("scroll", closeDropdownOnScroll);
+  }, [activeDropdown]);
+
+  useEffect(() => {
+    setActiveDropdown(null);
+    setIsOpen(false);
+  }, [location.pathname, location.search, location.hash]);
+
   const isActive = (path: string) => location.pathname === path;
 
   const handleNavClick = (pathOrEvent?: string | React.MouseEvent) => {
@@ -29,6 +46,8 @@ const Navbar = () => {
     if (!path || location.pathname === path) {
       window.scrollTo({ top: 0, behavior: "auto" });
     }
+    setSuppressHoverOpen(true);
+    setActiveDropdown(null);
     setIsOpen(false);
   };
 
@@ -200,12 +219,17 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div
               className="hidden items-center space-x-10 md:flex"
-              onMouseLeave={() => setActiveDropdown(null)}
+              onMouseLeave={() => {
+                setActiveDropdown(null);
+                setSuppressHoverOpen(false);
+              }}
             >
               {/* Solutions Dropdown */}
               <div
                 className="relative group"
-                onMouseEnter={() => setActiveDropdown("solutions")}
+                onMouseEnter={() => {
+                  if (!suppressHoverOpen) setActiveDropdown("solutions");
+                }}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
@@ -268,7 +292,9 @@ const Navbar = () => {
               {/* Products Dropdown */}
               <div
                 className="relative group"
-                onMouseEnter={() => setActiveDropdown("products")}
+                onMouseEnter={() => {
+                  if (!suppressHoverOpen) setActiveDropdown("products");
+                }}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
@@ -327,7 +353,9 @@ const Navbar = () => {
               {/* Resources Dropdown */}
               <div
                 className="relative group"
-                onMouseEnter={() => setActiveDropdown("resources")}
+                onMouseEnter={() => {
+                  if (!suppressHoverOpen) setActiveDropdown("resources");
+                }}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
@@ -375,7 +403,6 @@ const Navbar = () => {
                                 to={item.path}
                                 className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-[#1cd35c] transition-colors duration-200"
                                 onClick={() => {
-                                  setActiveDropdown(null);
                                   handleNavClick(item.path);
                                 }}
                               >

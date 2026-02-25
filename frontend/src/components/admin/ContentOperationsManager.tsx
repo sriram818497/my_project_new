@@ -12,6 +12,7 @@ import type {
   InsightExpertise,
 } from "../../types/content";
 import { trackAdminActivity } from "../../utils/adminActivityTracker";
+import { buildFallbackEventDetail, eventDetails, mergeEventDetailData } from "../../features/events/eventDetailData";
 
 type Module = "events" | "case-studies" | "insights" | "partners";
 
@@ -138,9 +139,6 @@ const parseFaqItems = (value: string): EventDetailContent["faqs"] =>
       return { question, answer };
     })
     .filter((item): item is NonNullable<EventDetailContent["faqs"]>[number] => Boolean(item));
-
-const formatSimpleDetailItems = (value: EventDetailContent["whoShouldAttend"] | EventDetailContent["benefits"]) =>
-  (value ?? []).map((item) => `${item.title} ${detailSeparator} ${item.description}`).join("\n");
 
 const formatAgendaItems = (value: EventDetailContent["agenda"]) =>
   (value ?? []).map((item) => `${item.time} ${detailSeparator} ${item.title} ${detailSeparator} ${item.description}`).join("\n");
@@ -273,12 +271,24 @@ const ContentOperationsManager = () => {
     return insightArticles.filter((item) => [item.title, item.category, item.date].some((v) => v.toLowerCase().includes(q)));
   }, [insightArticles, query]);
 
-  const loadEventDetailForm = (eventId: string) => {
-    const detail = contentManagerService.getEventDetail(eventId);
+  const loadEventDetailForm = useCallback((eventId: string) => {
+    const selectedEvent = events.find((item) => item.id === eventId);
+    const baseDetail = eventDetails[eventId] ?? (selectedEvent ? buildFallbackEventDetail(selectedEvent) : undefined);
+    const overrideDetail = contentManagerService.getEventDetail(eventId);
+    const detail = baseDetail ? mergeEventDetailData(baseDetail, overrideDetail) : undefined;
+
     if (!detail) {
       setEventDetailForm(createEmptyEventDetailForm());
       return;
     }
+
+    const whoShouldAttendText = (detail.whoShouldAttend ?? [])
+      .map((item) => `${item.title} ${detailSeparator} ${item.description}`)
+      .join("\n");
+    const benefitsText = (detail.benefits ?? [])
+      .map((item) => `${item.title} ${detailSeparator} ${item.description}`)
+      .join("\n");
+
     setEventDetailForm({
       status: detail.status ?? "",
       time: detail.time ?? "",
@@ -288,19 +298,19 @@ const ContentOperationsManager = () => {
       capacity: detail.capacity ?? "",
       level: detail.level ?? "",
       access: detail.access ?? "",
-      aboutText: detail.aboutText ?? "",
-      aboutPurpose: detail.aboutPurpose ?? "",
-      aboutUseCasesText: linesToText(detail.aboutUseCases),
-      aboutImportance: detail.aboutImportance ?? "",
-      whyTrendsText: linesToText(detail.whyTrends),
-      whyRegulatory: detail.whyRegulatory ?? "",
-      whoShouldAttendText: formatSimpleDetailItems(detail.whoShouldAttend),
-      benefitsText: formatSimpleDetailItems(detail.benefits),
+      aboutText: detail.about.text ?? "",
+      aboutPurpose: detail.about.purpose ?? "",
+      aboutUseCasesText: linesToText(detail.about.useCases),
+      aboutImportance: detail.about.importance ?? "",
+      whyTrendsText: linesToText(detail.whyMatters.trends),
+      whyRegulatory: detail.whyMatters.regulatory ?? "",
+      whoShouldAttendText,
+      benefitsText,
       agendaText: formatAgendaItems(detail.agenda),
       speakersText: formatSpeakerItems(detail.speakers),
       faqsText: formatFaqItems(detail.faqs),
     });
-  };
+  }, [events]);
 
   const loadCaseStudyDetailForm = useCallback((caseStudyId: string) => {
     const item = caseStudies.find((entry) => entry.id === caseStudyId);
@@ -331,7 +341,7 @@ const ContentOperationsManager = () => {
   useEffect(() => {
     if (!selectedEventDetailId) return;
     loadEventDetailForm(selectedEventDetailId);
-  }, [selectedEventDetailId]);
+  }, [selectedEventDetailId, loadEventDetailForm]);
 
   useEffect(() => {
     if (!selectedCaseStudyDetailId) return;

@@ -732,8 +732,27 @@ const ApplicantsPipeline = () => {
               <p className="text-gray-600 text-sm">{selected.email} - {selected.phone}</p>
             </div>
             <div className="flex items-center gap-2">
-              <a href={selected.resumeUrl} className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700">Preview Resume</a>
-              <a href={selected.resumeUrl} download={selected.resumeName} className="px-3 py-2 rounded-lg bg-[#1cd35c] text-white text-sm font-semibold">Download Resume</a>
+              {selected.resumeUrl ? (
+                <>
+                  <a
+                    href={selected.resumeUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700"
+                  >
+                    Preview Resume
+                  </a>
+                  <a
+                    href={selected.resumeUrl}
+                    download={selected.resumeName}
+                    className="px-3 py-2 rounded-lg bg-[#1cd35c] text-white text-sm font-semibold"
+                  >
+                    Download Resume
+                  </a>
+                </>
+              ) : (
+                <span className="text-sm text-gray-500">Resume not available</span>
+              )}
             </div>
           </div>
 

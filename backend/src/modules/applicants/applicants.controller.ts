@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { ZodError } from "zod";
 import { applicantsService } from "./applicants.service";
 import {
@@ -43,8 +44,32 @@ export const applicantsController = {
   async create(req: Request, res: Response) {
     const parsed = createApplicantSchema.safeParse(req.body);
     if (!parsed.success) return badRequest(res, parsed.error);
-    const data = await applicantsService.create(parsed.data);
-    return res.status(201).json({ success: true, data });
+    try {
+      const data = await applicantsService.create(parsed.data);
+      return res.status(201).json({ success: true, data });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+        return res.status(400).json({
+          success: false,
+          error: "This job posting is no longer available. Please refresh and apply again.",
+        });
+      }
+      throw error;
+    }
+  },
+
+  async uploadResume(req: Request, res: Response) {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: "Resume file is required" });
+    }
+    const resumeUrl = `/uploads/resumes/${encodeURIComponent(req.file.filename)}`;
+    return res.status(201).json({
+      success: true,
+      data: {
+        resumeUrl,
+        resumeName: req.file.originalname,
+      },
+    });
   },
 
   async updateStage(req: Request, res: Response) {

@@ -44,9 +44,27 @@ const TOKEN_STORAGE_KEY = "token";
 const MOCK_ADMIN_EMAIL = import.meta.env.VITE_DEMO_ADMIN_EMAIL || "admin@proteccio.com";
 const MOCK_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "admin123";
 const MOCK_ADMIN_TOKEN = import.meta.env.VITE_DEMO_ADMIN_TOKEN || "mock-admin-token-12345";
+const ENABLE_MOCK_AUTH = import.meta.env.DEV && import.meta.env.VITE_ENABLE_MOCK_AUTH === "true";
 const TOKEN_PATTERN = /^[A-Za-z0-9\-._~+/]+=*$/;
 const SERVER_URL = import.meta.env.VITE_SERVER_URL?.trim();
-const DEFAULT_BASE_URL = import.meta.env.DEV ? "http://localhost:5000" : "";
+const LOCAL_API_URL = "http://localhost:5000";
+
+const normalizeBaseUrl = (value: string) => value.replace(/\/+$/, "");
+
+const resolveApiBaseUrl = () => {
+  if (SERVER_URL) return normalizeBaseUrl(SERVER_URL);
+  if (import.meta.env.DEV) return LOCAL_API_URL;
+
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") {
+      return LOCAL_API_URL;
+    }
+  }
+
+  // Keep same-origin requests for hosted deployments that proxy /api.
+  return undefined;
+};
 
 const normalizeToken = (value: string | null) => {
   if (!value) return null;
@@ -62,7 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
   // Set up axios defaults
-  axios.defaults.baseURL = SERVER_URL || DEFAULT_BASE_URL;
+  axios.defaults.baseURL = resolveApiBaseUrl();
 
   // Set token in axios headers
   useEffect(() => {
@@ -84,7 +102,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // --- MOCK USER LOAD (For Local Development) ---
-      if (token === MOCK_ADMIN_TOKEN) {
+      if (ENABLE_MOCK_AUTH && token === MOCK_ADMIN_TOKEN) {
         devLog("Restoring Mock Admin Session");
         const mockUser: User = {
           id: 999,
@@ -126,22 +144,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, password: string) => {
     setError(null);
 
-    // --- MOCK ADMIN LOGIN (For Local Development) ---
-    if (email === MOCK_ADMIN_EMAIL && password === MOCK_ADMIN_PASSWORD) {
-      devLog("Using Mock Admin Login");
-      const mockUser: User = {
-        id: 999,
-        email: MOCK_ADMIN_EMAIL,
-        is_admin: true,
-        name: "System Administrator"
-      };
-      setUser(mockUser);
-      setToken(MOCK_ADMIN_TOKEN);
-      localStorage.setItem(TOKEN_STORAGE_KEY, MOCK_ADMIN_TOKEN);
-      return true;
-    }
-    // ------------------------------------------------
-
     try {
       const res = await axios.post("/api/auth/login", { email, password });
       if (res.data.success) {
@@ -164,6 +166,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       return false;
     } catch (err) {
+      if (ENABLE_MOCK_AUTH && email === MOCK_ADMIN_EMAIL && password === MOCK_ADMIN_PASSWORD) {
+        devLog("Using Mock Admin Login Fallback");
+        const mockUser: User = {
+          id: 999,
+          email: MOCK_ADMIN_EMAIL,
+          is_admin: true,
+          name: "System Administrator"
+        };
+        setUser(mockUser);
+        setToken(MOCK_ADMIN_TOKEN);
+        localStorage.setItem(TOKEN_STORAGE_KEY, MOCK_ADMIN_TOKEN);
+        return true;
+      }
       const axiosError = err as { response?: { data?: { error?: string } } };
       setError(axiosError.response?.data?.error || "Login failed");
       return false;

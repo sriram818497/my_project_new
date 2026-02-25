@@ -5,6 +5,7 @@ import { ArrowLeft, MapPin, Briefcase, Clock, Building2, ChevronRight, X, Upload
 
 import type { RecruitmentJob } from "../types/recruitment";
 import { jobsService } from "../services/jobs";
+import { applicantsService } from "../services/applicants";
 
 const HIRING_PROCESS = [
     { title: "Application", description: "Submit your resume", icon: <Upload className="w-4 h-4" /> },
@@ -46,10 +47,12 @@ const ApplicationModal = ({ job, onClose }: ApplicationModalProps) => {
     });
     const [submitted, setSubmitted] = useState(false);
     const [resume, setResume] = useState<File | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
 
     const validateStep = (step: number) => {
         if (step === 1) {
-            return formData.fullName && formData.email && formData.phone && formData.location && formData.linkedin;
+            return formData.fullName && formData.email && formData.phone && formData.location && formData.linkedin && resume;
         }
         if (step === 2) {
             return formData.role && formData.experience && formData.techStack && formData.noticePeriod;
@@ -60,6 +63,7 @@ const ApplicationModal = ({ job, onClose }: ApplicationModalProps) => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        setSubmitError("");
         setFormData(prev => ({ ...prev, [name]: val }));
     };
 
@@ -70,10 +74,44 @@ const ApplicationModal = ({ job, onClose }: ApplicationModalProps) => {
     };
     const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulation of submission
-        setSubmitted(true);
+        setSubmitError("");
+
+        if (!resume) {
+            setSubmitError("Resume is required. Please upload a PDF resume.");
+            return;
+        }
+        if (!resume.name.toLowerCase().endsWith(".pdf")) {
+            setSubmitError("Please upload resume in PDF format only.");
+            return;
+        }
+
+        try {
+            setIsSubmitting(true);
+            const { resumeUrl, resumeName } = await applicantsService.uploadResume(resume);
+            await applicantsService.submitApplication({
+                jobId: job.id,
+                fullName: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                location: formData.location,
+                experience: formData.experience || job.experience || "Not specified",
+                education: formData.employmentStatus || "Not specified",
+                skills: formData.techStack
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean),
+                resumeUrl,
+                resumeName,
+            });
+            setSubmitted(true);
+        } catch (error) {
+            const message = (error as { response?: { data?: { error?: string } } })?.response?.data?.error;
+            setSubmitError(message || "Unable to submit application right now. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (submitted) {
@@ -159,6 +197,11 @@ const ApplicationModal = ({ job, onClose }: ApplicationModalProps) => {
                     {/* Step Content */}
                     <div className="p-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
+                            {submitError && (
+                                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                                    {submitError}
+                                </div>
+                            )}
                             <AnimatePresence mode="wait">
                                 {currentStep === 1 && (
                                     <motion.div
@@ -333,8 +376,12 @@ const ApplicationModal = ({ job, onClose }: ApplicationModalProps) => {
                                         Next Step
                                     </button>
                                 ) : (
-                                    <button type="submit" className="px-10 py-3 bg-[#1cd35c] text-white font-black rounded-xl hover:bg-[#19b850] transition-colors shadow-xl shadow-[#1cd35c]/30 text-xs uppercase tracking-widest">
-                                        Submit Application
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="px-10 py-3 bg-[#1cd35c] text-white font-black rounded-xl hover:bg-[#19b850] transition-colors shadow-xl shadow-[#1cd35c]/30 text-xs uppercase tracking-widest disabled:opacity-60"
+                                    >
+                                        {isSubmitting ? "Submitting..." : "Submit Application"}
                                     </button>
                                 )}
                             </div>

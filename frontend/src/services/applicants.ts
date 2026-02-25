@@ -2,6 +2,7 @@ import axios from "axios";
 import { APPLICANTS_SEED } from "../data/applicantsSeed";
 import type {
   ApplicantGender,
+  ApplicantNote,
   ApplicantProfile,
   ApplicantRoundEvaluation,
   ApplicantRoundEvaluations,
@@ -10,7 +11,9 @@ import type {
 } from "../types/applicant";
 
 const UPDATED_EVENT = "proteccio:applicants-updated";
+const ALLOW_CLIENT_FALLBACK = import.meta.env.DEV;
 const nowIso = () => new Date().toISOString();
+const idPart = () => Math.random().toString(36).slice(2, 8);
 
 const seedGenderById = new Map<string, ApplicantGender>(
   APPLICANTS_SEED.filter((item) => Boolean(item.gender)).map((item) => [item.id, item.gender as ApplicantGender])
@@ -121,20 +124,105 @@ const notifyApplicantsChanged = () => {
   }
 };
 
+const resolveAssetUrl = (value?: string) => {
+  if (!value) return "";
+  if (value === "#") return value;
+  if (/^https?:\/\//i.test(value)) return value;
+  const base = String(axios.defaults.baseURL || "").replace(/\/+$/, "");
+  if (!base) return value;
+  return value.startsWith("/") ? `${base}${value}` : `${base}/${value}`;
+};
+
 const safeReadApplicants = (payload: unknown): ApplicantProfile[] => {
   if (!payload || typeof payload !== "object") return [];
   const maybe = payload as { data?: unknown };
   if (!Array.isArray(maybe.data)) return [];
-  return (maybe.data as ApplicantProfile[]).map(normalizeApplicant);
+  return (maybe.data as ApplicantProfile[]).map((applicant) =>
+    normalizeApplicant({
+      ...applicant,
+      resumeUrl: resolveAssetUrl(applicant.resumeUrl),
+      taskSubmissionUrl: applicant.taskSubmissionUrl ? resolveAssetUrl(applicant.taskSubmissionUrl) : undefined,
+      taskAssignment: applicant.taskAssignment
+        ? {
+            ...applicant.taskAssignment,
+            fileUrl: applicant.taskAssignment.fileUrl ? resolveAssetUrl(applicant.taskAssignment.fileUrl) : undefined,
+          }
+        : undefined,
+    })
+  );
+};
+
+type ApplicantSubmitInput = {
+  jobId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  location: string;
+  experience: string;
+  education: string;
+  skills: string[];
+  resumeUrl: string;
+  resumeName: string;
+};
+
+const toApplicantPayload = (input: ApplicantSubmitInput) => {
+  const timestamp = nowIso();
+  const applicantId = `app-${Date.now().toString(36)}-${idPart()}`;
+  const stage: ApplicantStage = "Applied";
+  const notes: ApplicantNote[] = [];
+
+  return {
+    id: applicantId,
+    jobId: input.jobId.trim(),
+    name: input.fullName.trim(),
+    email: input.email.trim().toLowerCase(),
+    phone: input.phone.trim(),
+    education: input.education.trim() || "Not specified",
+    location: input.location.trim(),
+    experience: input.experience.trim() || "Not specified",
+    skills: input.skills.map((item) => item.trim()).filter(Boolean),
+    resumeUrl: input.resumeUrl.trim(),
+    resumeName: input.resumeName.trim(),
+    stage,
+    rating: 3,
+    notes,
+    stageRatings: { [stage]: 3 },
+    roundEvaluations: {},
+    stageHistory: [{ stage, movedAt: timestamp }],
+    appliedAt: timestamp,
+    updatedAt: timestamp,
+  };
 };
 
 export const applicantsService = {
+  async uploadResume(file: File): Promise<{ resumeUrl: string; resumeName: string }> {
+    const formData = new FormData();
+    formData.append("resume", file);
+    const response = await axios.post("/api/applicants/upload-resume", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    const data = (response.data as { data?: { resumeUrl?: string; resumeName?: string } } | undefined)?.data;
+    const resumeUrl = data?.resumeUrl ? resolveAssetUrl(data.resumeUrl) : "";
+    const resumeName = data?.resumeName || file.name;
+    if (!resumeUrl) {
+      throw new Error("Resume upload failed. Missing resume URL from server.");
+    }
+    return { resumeUrl, resumeName };
+  },
+
+  async submitApplication(input: ApplicantSubmitInput): Promise<void> {
+    const payload = toApplicantPayload(input);
+    await axios.post("/api/applicants", payload);
+    notifyApplicantsChanged();
+  },
+
   async getAll(): Promise<ApplicantProfile[]> {
     try {
       const response = await axios.get("/api/applicants");
       return safeReadApplicants(response.data);
     } catch (error) {
       console.error("Failed to fetch applicants from API. Falling back to seed data.", error);
+      if (!ALLOW_CLIENT_FALLBACK) return [];
       return cloneSeed().map(normalizeApplicant);
     }
   },
