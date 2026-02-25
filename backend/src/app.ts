@@ -17,9 +17,20 @@ const app = express();
 
 app.disable("x-powered-by");
 
+const allowedOrigins = new Set(
+  [env.FRONTEND_URL, ...(env.FRONTEND_URLS ?? [])].filter(Boolean)
+);
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: (origin, callback) => {
+      // Allow non-browser clients (no Origin header).
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.has(origin)) return callback(null, true);
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );

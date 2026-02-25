@@ -20,6 +20,17 @@ const environmentSchema = z.object({
   JWT_SECRET: z.string().min(24, "JWT_SECRET must be at least 24 characters"),
   JWT_EXPIRES_IN: z.string().min(1).default("1d"),
   FRONTEND_URL: z.string().url("FRONTEND_URL must be a valid URL").default("http://localhost:5173"),
+  FRONTEND_URLS: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => {
+      if (!value) return [] as string[];
+      return value
+        .split(",")
+        .map((entry) => entry.trim())
+        .filter(Boolean);
+    }),
   RESEND_API_KEY: z.string().trim().optional(),
   EMAIL_FROM: z.string().trim().optional(),
   EMAIL_USER: z.string().trim().optional(),
