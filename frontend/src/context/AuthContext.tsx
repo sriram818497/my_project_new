@@ -45,6 +45,8 @@ const MOCK_ADMIN_EMAIL = import.meta.env.VITE_DEMO_ADMIN_EMAIL || "admin@protecc
 const MOCK_ADMIN_PASSWORD = import.meta.env.VITE_DEMO_ADMIN_PASSWORD || "admin123";
 const MOCK_ADMIN_TOKEN = import.meta.env.VITE_DEMO_ADMIN_TOKEN || "mock-admin-token-12345";
 const TOKEN_PATTERN = /^[A-Za-z0-9\-._~+/]+=*$/;
+const SERVER_URL = import.meta.env.VITE_SERVER_URL?.trim();
+const DEFAULT_BASE_URL = import.meta.env.DEV ? "http://localhost:5000" : "";
 
 const normalizeToken = (value: string | null) => {
   if (!value) return null;
@@ -60,8 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [error, setError] = useState<string | null>(null);
 
   // Set up axios defaults
-  axios.defaults.baseURL =
-    import.meta.env.VITE_SERVER_URL || "http://localhost:5000";
+  axios.defaults.baseURL = SERVER_URL || DEFAULT_BASE_URL;
 
   // Set token in axios headers
   useEffect(() => {
