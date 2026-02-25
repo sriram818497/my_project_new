@@ -1,0 +1,205 @@
+.logoutButton {
+  --logout-bg: #1b2335;
+  --logout-text: #f7fbff;
+  --logout-door: #dc2626;
+  --logout-door-edge: rgba(247, 251, 255, 0.75);
+  --runner: #f7fbff;
+
+  display: inline-grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.64rem;
+  min-width: 136px;
+  height: 2.5rem;
+  padding: 0 0.44rem 0 0.92rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.7rem;
+  background: linear-gradient(135deg, #202a40 0%, var(--logout-bg) 100%);
+  color: var(--logout-text);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.2);
+}
+
+.buttonText {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: transform 300ms ease, opacity 240ms ease;
+}
+
+.doorway {
+  position: relative;
+  width: 1.78rem;
+  height: 1.78rem;
+  border-radius: 0.35rem;
+  background: var(--logout-door);
+  overflow: hidden;
+  transform-origin: 50% 50%;
+}
+
+.door {
+  position: absolute;
+  inset: 0;
+}
+
+.door::before {
+  content: "";
+  position: absolute;
+  top: 0.26rem;
+  right: 0.25rem;
+  width: 2px;
+  height: 1.2rem;
+  border-radius: 999px;
+  background: var(--logout-door-edge);
+}
+
+.figure {
+  position: absolute;
+  left: -0.85rem;
+  top: 50%;
+  width: 0.76rem;
+  height: 0.76rem;
+  transform: translateY(-50%);
+  opacity: 0;
+  z-index: 1;
+}
+
+.runnerHead,
+.runnerBody,
+.runnerLeg {
+  position: absolute;
+  background: var(--runner);
+}
+
+.runnerHead {
+  width: 0.2rem;
+  height: 0.2rem;
+  border-radius: 50%;
+  left: 0.33rem;
+  top: 0.02rem;
+}
+
+.runnerBody {
+  width: 0.08rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  left: 0.36rem;
+  top: 0.2rem;
+  transform: rotate(14deg);
+  transform-origin: top center;
+}
+
+.runnerLeg {
+  width: 0.08rem;
+  height: 0.26rem;
+  border-radius: 999px;
+  left: 0.36rem;
+  top: 0.46rem;
+  transform-origin: top center;
+}
+
+.runnerLegFront {
+  transform: rotate(34deg);
+}
+
+.runnerLegBack {
+  transform: rotate(-28deg);
+}
+
+.isAnimating .buttonText {
+  opacity: 0.86;
+  transform: translateX(-0.1rem);
+}
+
+.isAnimating .doorway {
+  animation: doorwayPulse 900ms ease;
+}
+
+.isAnimating .figure {
+  animation: runnerMove 900ms cubic-bezier(0.68, 0.1, 0.25, 1) forwards;
+}
+
+.isAnimating .runnerLegFront {
+  animation: frontLeg 240ms linear 3;
+}
+
+.isAnimating .runnerLegBack {
+  animation: backLeg 240ms linear 3;
+}
+
+@keyframes runnerMove {
+  0% {
+    left: -0.85rem;
+    opacity: 0;
+    transform: translateY(-50%) scale(0.88);
+  }
+
+  14% {
+    opacity: 1;
+  }
+
+  65% {
+    left: 0.53rem;
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+
+  100% {
+    left: 1.62rem;
+    opacity: 0;
+    transform: translateY(-50%) scale(0.92);
+  }
+}
+
+@keyframes doorwayPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  42% {
+    transform: scale(1.06);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes frontLeg {
+  0% {
+    transform: rotate(30deg);
+  }
+
+  50% {
+    transform: rotate(-22deg);
+  }
+
+  100% {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes backLeg {
+  0% {
+    transform: rotate(-26deg);
+  }
+
+  50% {
+    transform: rotate(26deg);
+  }
+
+  100% {
+    transform: rotate(-26deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoutButton,
+  .buttonText,
+  .doorway,
+  .figure,
+  .runnerLegFront,
+  .runnerLegBack {
+    animation: none !important;
+    transition: none !important;
+  }
+}

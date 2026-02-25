@@ -1,0 +1,252 @@
+/* Ensure Tailwind CSS is installed and configured correctly */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ) {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition-property: transform, box-shadow, filter, opacity;
+    transition-duration: 520ms;
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  )::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.05) 34%,
+      rgba(255, 255, 255, 0) 70%
+    );
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  )::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at var(--ripple-x, 50%) var(--ripple-y, 50%),
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.24) 24%,
+      rgba(255, 255, 255, 0.08) 42%,
+      rgba(255, 255, 255, 0) 62%
+    );
+    transform: scale(0.18);
+    opacity: 0;
+    transition-property: transform, opacity;
+    transition-duration: 640ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4 {
+    letter-spacing: -0.02em;
+  }
+
+  @media (hover: hover) {
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    ):hover {
+      transform: translateY(-1px) scale(1.01);
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    }
+
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    ):hover::before {
+      opacity: 1;
+    }
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ):active {
+    transform: translateY(0) scale(0.975);
+    transition-duration: 120ms;
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ):active::after {
+    transform: scale(2.75);
+    opacity: 0.95;
+    transition-duration: 420ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ):focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.42);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer base {
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    ),
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    )::after {
+      transition: none;
+    }
+
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    ):hover,
+    :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      input[type="reset"],
+      [role="button"],
+      .fx-btn,
+      a[class*="rounded"][class*="px-"][class*="py-"]
+    ):active {
+      transform: none;
+    }
+  }
+}
+
+@layer utilities {
+  .nav-clean {
+    transform: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+
+  .nav-clean::before,
+  .nav-clean::after {
+    opacity: 0 !important;
+    display: none !important;
+  }
+
+  .nav-clean:hover,
+  .nav-clean:active {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .nav-clean:focus-visible {
+    outline: none !important;
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(28, 211, 92, 0.4);
+  }
+}
