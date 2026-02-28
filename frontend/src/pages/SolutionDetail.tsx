@@ -1,151 +1,115 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import {
-  Activity,
   ArrowRight,
   CheckCircle,
-  FileText,
-  Globe,
-  Lock,
-  Shield,
-  Users,
 } from "lucide-react";
 import { useEffect } from "react";
 import { solutionsData } from "../data/solutionsData";
 
-const GdprDetailPage = () => (
-  <div className="min-h-screen bg-transparent text-white font-jakarta relative overflow-hidden">
-    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-[#1cd35c]/8 via-transparent to-transparent pointer-events-none opacity-40 transition-all duration-1000" />
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-[-8%] right-[-6%] w-[520px] h-[520px] bg-[#1cd35c]/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-12%] left-[-8%] w-[560px] h-[560px] bg-[#1cd35c]/6 blur-[120px] rounded-full" />
+const GdprDetailPage = () => {
+  const steps = [
+    {
+      title: "1. We Start with a GDPR Readiness Assessment",
+      text: "We assess your current data practices, policies, and systems against GDPR requirements. You'll get a clear roadmap that highlights gaps, risks, and priorities for achieving compliance.",
+    },
+    {
+      title: "2. We Help You Identify Your Role",
+      text: "We clarify whether you're a Data Controller, Data Processor, or both and what that means for your obligations. This ensures you apply the right legal bases, responsibilities, and safeguards across your operations.",
+    },
+    {
+      title: "3. We Build Your Privacy Governance Framework",
+      text: "We help you establish GDPR-aligned policies, procedures, and governance structures. From data minimization to accountability, we embed privacy into your business DNA.",
+    },
+    {
+      title: "4. We Operationalize Consent & Legal Bases",
+      text: "We design workflows for managing consent, legitimate interest assessments, and other legal bases for processing. This ensures your data collection is lawful, transparent, and respectful of user rights.",
+    },
+    {
+      title: "5. We Enable Data Subject Rights Management",
+      text: "We help you set up systems to manage access, rectification, erasure, portability, and objection requests. Our automation tools streamline DSARs and ensure timely, compliant responses.",
+    },
+    {
+      title: "6. We Conduct DPIAs & Risk Assessments",
+      text: "We guide you through Data Protection Impact Assessments (DPIAs) for high-risk processing activities. This helps you identify and mitigate privacy risks before they become liabilities.",
+    },
+    {
+      title: "7. We Train Your Teams",
+      text: "We deliver GDPR-specific training for leadership, operations, and frontline teams. This builds a privacy-aware culture and reduces the risk of non-compliance.",
+    },
+    {
+      title: "8. We Help You Prepare for Breach Response",
+      text: "We help you build incident response playbooks and breach notification protocols. This ensures you're ready to report breaches within 72 hours and manage them effectively.",
+    },
+    {
+      title: "9. We Support You Through Compliance Audits",
+      text: "We assist with documentation, internal reviews, and regulator-facing readiness. Whether it's a voluntary audit or a regulatory inquiry, we've got your back.",
+    },
+    {
+      title: "10. We Help You Stay Compliant",
+      text: "GDPR compliance is ongoing. We offer continuous support to adapt to regulatory updates and business changes. From policy refreshes to tech upgrades, we help you stay ahead of the curve.",
+    },
+  ];
+
+  const whyProteccio = [
+    "Deep expertise in GDPR, DPDPA, ISO 27701, HIPAA, and global privacy laws",
+    "Founder-led, hands-on engagement",
+    "Automation tools for DSARs, RoPA, and consent management",
+    "Industry-specific frameworks for finance, healthcare, edtech, and more",
+    "Scalable for startups and global enterprises alike",
+  ];
+
+  return (
+    <div className="min-h-screen bg-transparent text-white font-jakarta relative overflow-hidden">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-[#1cd35c]/8 via-transparent to-transparent pointer-events-none opacity-40 transition-all duration-1000" />
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-8%] right-[-6%] w-[520px] h-[520px] bg-[#1cd35c]/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-12%] left-[-8%] w-[560px] h-[560px] bg-[#1cd35c]/6 blur-[120px] rounded-full" />
+      </div>
+
+      <section className="relative pt-28 pb-12 md:pt-28 md:pb-16 z-10">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 md:p-10">
+            <div className="max-w-5xl mx-auto text-center">
+              <h1 className="text-4xl md:text-6xl font-black leading-tight text-white mb-6">
+                How Proteccio Helps You Become{" "}
+                <span className="bg-gradient-to-r from-[#1cd35c] via-[#20e066] to-[#25f075] bg-clip-text text-transparent">GDPR Compliant</span>
+              </h1>
+              <p className="text-white/70 text-lg md:text-xl leading-relaxed">
+                The General Data Protection Regulation (GDPR) is the world's most influential privacy law, setting a global benchmark for how personal data should be handled. At Proteccio Data, we help you go beyond just meeting the regulation we help you build a privacy-first organization that earns trust, reduces risk, and supports sustainable growth. Whether you're a European business or a global company serving EU residents, we bring the right mix of legal expertise, operational strategy, and automation tools to make GDPR compliance clear, actionable, and scalable.
+              </p>
+              <h2 className="text-2xl md:text-4xl font-black text-white mt-10 mb-8">Here's how we help:</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {steps.map((item) => (
+                <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-5">
+                  <h3 className="text-lg md:text-xl font-black text-white leading-snug">{item.title}</h3>
+                  <p className="text-white/70 mt-3 leading-relaxed">{item.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 rounded-2xl border border-[#1cd35c]/20 bg-[#1cd35c]/10 p-6">
+              <h3 className="text-center text-2xl md:text-3xl font-black text-white mb-5">Why Proteccio?</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                {whyProteccio.map((point) => (
+                  <div key={point} className="flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 text-[#1cd35c] mt-1 shrink-0" />
+                    <span className="text-white/85">{point}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl bg-[#1cd35c] px-6 py-5 text-center text-white font-bold text-sm md:text-xl leading-snug">
+              Let's build a privacy-first organization that's compliant, transparent, and trusted. With Proteccio, GDPR compliance isn't just achievable it's transformative.
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-
-    <section className="relative pt-28 pb-12 md:pt-28 md:pb-16 overflow-hidden z-10">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-4xl mx-auto">
-          <span className="inline-block px-4 py-1 bg-[#1cd35c]/10 border border-[#1cd35c]/20 rounded-full text-[#1cd35c] text-[11px] font-black uppercase tracking-widest mb-6">
-            Global Regulation
-          </span>
-          <h1 className="text-4xl md:text-6xl font-black leading-tight tracking-tight text-white mb-6">
-            GDPR Compliance <span className="bg-gradient-to-r from-[#1cd35c] via-[#20e066] to-[#25f075] bg-clip-text text-transparent">That Scales with You</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/60 font-medium leading-relaxed max-w-3xl mx-auto">
-            Build, operate, and prove GDPR readiness with structured workflows for records, rights, risk, and cross-border accountability.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
-          {[
-            { label: "Regulation", value: "EU GDPR" },
-            { label: "Coverage", value: "Articles 5-32" },
-            { label: "Workflow", value: "ROPA + DSAR + DPIA" },
-            { label: "Outcome", value: "Audit Ready" },
-          ].map((item) => (
-            <div key={item.label} className="rounded-2xl border border-white/10 bg-white/5 p-4 text-center">
-              <p className="text-[10px] font-black uppercase tracking-widest text-white/40">{item.label}</p>
-              <p className="mt-2 text-sm md:text-base font-bold text-white">{item.value}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section className="relative py-8 z-10">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-6 md:p-8">
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-4">About This Framework</h2>
-          <p className="text-white/70 leading-relaxed">
-            GDPR is not a one-time checklist. Proteccio operationalizes privacy principles into repeatable controls across data mapping, lawful basis tracking,
-            rights handling, retention, and processor governance so teams stay compliant as systems evolve.
-          </p>
-          <div className="mt-6 space-y-3">
-            {[
-              "Article-aligned compliance playbooks",
-              "Evidence-first documentation model",
-              "Role-based accountability across business and engineering",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-3">
-                <CheckCircle className="w-4 h-4 text-[#1cd35c] mt-1 shrink-0" />
-                <span className="text-white/80">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-[#1cd35c]/30 bg-gradient-to-br from-[#1cd35c]/20 to-[#1cd35c]/5 p-6 md:p-8">
-          <h2 className="text-2xl md:text-3xl font-black text-white mb-4">What This Enables</h2>
-          <div className="space-y-4">
-            {[
-              "Faster DSAR response with complete response traceability",
-              "Clear records of processing and lawful basis decisions",
-              "Consistent DPIA execution for high-risk processing",
-              "Proactive transfer and processor risk management",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-3 border-b border-white/10 pb-3 last:border-0 last:pb-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#1cd35c] mt-2.5 shrink-0" />
-                <span className="text-white/90">{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section className="relative py-10 z-10">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-center text-3xl md:text-5xl font-black text-white mb-10">
-          Core <span className="bg-gradient-to-r from-[#1cd35c] via-[#20e066] to-[#25f075] bg-clip-text text-transparent">Capabilities</span>
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[
-            { title: "Records of Processing", icon: FileText, text: "Maintain current ROPA with ownership, purpose, systems, and retention mapping." },
-            { title: "Data Subject Rights", icon: Users, text: "Track, route, and fulfill rights requests with SLA and evidence management." },
-            { title: "DPIA Workflows", icon: Shield, text: "Run impact assessments consistently for high-risk processing operations." },
-            { title: "Consent & Notices", icon: CheckCircle, text: "Align consent, transparency, and policy disclosures to legal requirements." },
-            { title: "Transfer Governance", icon: Globe, text: "Manage cross-border transfer controls and legal mechanism tracking." },
-            { title: "Control Monitoring", icon: Activity, text: "Monitor ongoing control effectiveness and demonstrate audit readiness." },
-          ].map((card) => (
-            <div key={card.title} className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <div className="w-10 h-10 rounded-lg bg-[#1cd35c]/10 border border-[#1cd35c]/20 flex items-center justify-center mb-4">
-                <card.icon className="w-5 h-5 text-[#1cd35c]" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-              <p className="text-white/70 leading-relaxed">{card.text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section className="relative pb-14 md:pb-16 pt-2 z-10">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-[2rem] border border-[#1cd35c]/30 bg-gradient-to-r from-[#1cd35c]/20 to-[#1cd35c]/5 p-8 md:p-10 text-center">
-          <div className="w-12 h-12 rounded-xl bg-[#1cd35c]/15 border border-[#1cd35c]/25 flex items-center justify-center mx-auto mb-4">
-            <Lock className="w-6 h-6 text-[#1cd35c]" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Ready to Operationalize GDPR?</h2>
-          <p className="max-w-3xl mx-auto text-white/80 leading-relaxed mb-8">
-            Work with Proteccio to turn GDPR obligations into a practical operating model for legal, privacy, and engineering teams.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              to="/contact"
-              className="inline-flex items-center px-8 py-3 bg-[#1cd35c] text-white rounded-full font-bold hover:bg-[#19b850] transition-all"
-            >
-              Talk to an Expert <ArrowRight className="ml-2 w-4 h-4" />
-            </Link>
-            <Link
-              to="/book-demo"
-              className="px-8 py-3 border-2 border-[#1cd35c] text-[#1cd35c] rounded-full font-bold hover:bg-[#1cd35c] hover:text-white transition-all"
-            >
-              Book a Free Demo
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-);
+  );
+};
 
 const DpdpaDetailPage = () => {
   const steps = [

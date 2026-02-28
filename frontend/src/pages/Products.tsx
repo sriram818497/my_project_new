@@ -15,13 +15,13 @@ const stages = [
         name: "Data Discovery & Classification (DD&DC)",
         tool: "Identify and classify personal and sensitive data automatically.",
         icon: Search,
-        solutionLink: "/solutions/gdpr"
+        solutionLink: "/products/data-discovery-classification-dd-dc"
       },
       {
         name: "Data Mapping",
         tool: "Visualize how data flows within and outside the organization.",
         icon: GitBranch,
-        solutionLink: "/solutions/iso-27701"
+        solutionLink: "/products/data-mapping"
       }
     ]
   },
@@ -36,13 +36,13 @@ const stages = [
         name: "Records of Processing Activities (RoPA)",
         tool: "Maintain GDPR Article 30 compliant records.",
         icon: Database,
-        solutionLink: "/solutions/gdpr"
+        solutionLink: "/products/records-of-processing-activities-ropa"
       },
       {
         name: "Privacy by Design for Applications (PbD)",
         tool: "Capture privacy requirements during product design.",
         icon: Cpu,
-        solutionLink: "/solutions/iso-27701"
+        solutionLink: "/products/privacy-by-design-for-applications-pbd"
       }
     ]
   },
@@ -57,19 +57,19 @@ const stages = [
         name: "New Project DPIA",
         tool: "Assess high-risk processing activities across new initiatives.",
         icon: ClipboardCheck,
-        solutionLink: "/solutions/dpdp-act"
+        solutionLink: "/products/new-project-dpia"
       },
       {
         name: "Third-Party Risk Management (TPRM)",
         tool: "Evaluate vendor and processor risk across your supply chain.",
         icon: Globe,
-        solutionLink: "/solutions/tisax"
+        solutionLink: "/products/third-party-risk-management-tprm"
       },
       {
         name: "Free Assessment Tools",
         tool: "Quick checks for exposure and gaps in your privacy posture.",
         icon: Zap,
-        solutionLink: "/solutions/dpdp-act"
+        solutionLink: "/products/free-assessment-tools"
       }
     ]
   },
@@ -84,19 +84,19 @@ const stages = [
         name: "Consent Management",
         tool: "Capture and manage user consents transparently.",
         icon: UserCheck,
-        solutionLink: "/solutions/dpdp-act"
+        solutionLink: "/products/consent-management"
       },
       {
         name: "DSR Request Management",
         tool: "Fulfill data subject rights efficiently.",
         icon: Mail,
-        solutionLink: "/solutions/cpra"
+        solutionLink: "/products/dsr-request-management"
       },
       {
         name: "Data Breach Management",
         tool: "Log and manage incidents with accountability.",
         icon: AlertTriangle,
-        solutionLink: "/solutions/hipaa"
+        solutionLink: "/products/data-breach-management"
       }
     ]
   },
@@ -111,7 +111,7 @@ const stages = [
         name: "Audit & Evidence Readiness",
         tool: "Generate defensible records for regulators, auditors, and enterprise clients.",
         icon: Award,
-        solutionLink: "/solutions/iso-27001"
+        solutionLink: "/products/audit-evidence-readiness"
       }
     ]
   }

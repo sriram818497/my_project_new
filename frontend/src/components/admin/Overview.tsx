@@ -306,12 +306,12 @@ const Overview = ({ onActivityNavigate }: OverviewProps) => {
           <LoginCard
             title="Privacy Tools Workspace"
             description="Assessment and compliance tools for day-to-day operations"
-            link="https://tools.protecciodata.com"
+            link="https://app.protecciodata.com/"
           />
           <LoginCard
             title="PIA Workspace"
             description="Privacy Impact Assessment portal for governance workflows"
-            link="https://pia.protecciodata.com"
+            link="https://pia.protecciodata.com/login"
           />
         </div>
       </section>
@@ -333,12 +333,12 @@ const Overview = ({ onActivityNavigate }: OverviewProps) => {
           <LoginCard
             title="Privacy Tools Admin Console"
             description="Administrative controls for assessments and tool configuration"
-            link="https://tools-admin.protecciodata.com"
+            link="https://app.protecciodata.com/admin/login"
           />
           <LoginCard
             title="PIA Admin Console"
             description="Administrative controls for PIA templates and review workflow"
-            link="https://pia-admin.protecciodata.com"
+            link="https://pia.protecciodata.com/administrator/login"
           />
         </div>
       </section>

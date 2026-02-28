@@ -161,6 +161,49 @@
     outline: 2px solid rgba(255, 255, 255, 0.42);
     outline-offset: 2px;
   }
+
+  /* Remove generic hover/focus box overlays while preserving component styles. */
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  )::before,
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  )::after {
+    display: none;
+  }
+
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ):hover,
+  :where(
+    button,
+    input[type="button"],
+    input[type="submit"],
+    input[type="reset"],
+    [role="button"],
+    .fx-btn,
+    a[class*="rounded"][class*="px-"][class*="py-"]
+  ):active {
+    box-shadow: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

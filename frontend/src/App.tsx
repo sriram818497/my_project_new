@@ -26,6 +26,17 @@ const Resources = lazy(() => import("./pages/Resources"));
 const Insights = lazy(() => import("./pages/Insights"));
 const SolutionDetail = lazy(() => import("./pages/SolutionDetail"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const ProductDddc = lazy(() => import("./pages/ProductDddc"));
+const ProductDataMapping = lazy(() => import("./pages/ProductDataMapping"));
+const ProductRopa = lazy(() => import("./pages/ProductRopa"));
+const ProductApplicationPbd = lazy(() => import("./pages/ProductApplicationPbd"));
+const ProductNewProjectDpia = lazy(() => import("./pages/ProductNewProjectDpia"));
+const ProductTprm = lazy(() => import("./pages/ProductTprm"));
+const ProductFreeTools = lazy(() => import("./pages/ProductFreeTools"));
+const ProductConsentManagement = lazy(() => import("./pages/ProductConsentManagement"));
+const ProductDsrRequest = lazy(() => import("./pages/ProductDsrRequest"));
+const ProductDataBreach = lazy(() => import("./pages/ProductDataBreach"));
+const ProductAuditEvidenceReadiness = lazy(() => import("./pages/ProductAuditEvidenceReadiness"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const CaseStudyDetail = lazy(() => import("./pages/CaseStudyDetail"));
@@ -75,6 +86,59 @@ const routeSeoMap: Record<string, { title: string; description: string }> = {
   "/products": {
     title: "Products | Proteccio",
     description: "Discover Proteccio products across the privacy lifecycle: know, document, assess, control, and prove.",
+  },
+  "/products/data-discovery-classification-dd-dc": {
+    title: "DD&DC | Proteccio",
+    description: "Learn about Proteccio DD&DC to discover and classify sensitive data for better governance and compliance.",
+  },
+  "/products/data-mapping": {
+    title: "Data Mapping | Proteccio",
+    description: "Learn how Proteccio Data Mapping helps visualize data flows, storage locations, and transfer risks.",
+  },
+  "/products/records-of-processing-activities-ropa": {
+    title: "RoPA | Proteccio",
+    description:
+      "Learn how Proteccio RoPA automates and centralizes processing activity records with dashboards and audit trails.",
+  },
+  "/products/privacy-by-design-for-applications-pbd": {
+    title: "Application PbD | Proteccio",
+    description:
+      "Learn how Proteccio Application PbD embeds privacy-by-design controls across your software development lifecycle.",
+  },
+  "/products/new-project-dpia": {
+    title: "New Project DPIA | Proteccio",
+    description:
+      "Learn how Proteccio New Project DPIA supports risk assessment, mitigation tracking, and exportable reports.",
+  },
+  "/products/third-party-risk-management-tprm": {
+    title: "TPRM | Proteccio",
+    description:
+      "Learn how Proteccio TPRM centralizes third-party risk assessments, due diligence, and vendor compliance tracking.",
+  },
+  "/products/free-assessment-tools": {
+    title: "Free Tools | Proteccio",
+    description:
+      "Explore Proteccio free privacy and security assessment tools for cookie scanning, gap analysis, and compliance reporting.",
+  },
+  "/products/consent-management": {
+    title: "Consent Management | Proteccio",
+    description:
+      "Learn how Proteccio Consent Management helps capture, track, and audit user consent across processing workflows.",
+  },
+  "/products/dsr-request-management": {
+    title: "DSR Request | Proteccio",
+    description:
+      "Learn how Proteccio DSR Request Management automates intake, tracking, and fulfillment of data subject rights requests.",
+  },
+  "/products/data-breach-management": {
+    title: "Data Breach | Proteccio",
+    description:
+      "Learn how Proteccio Data Breach Management supports rapid detection, incident response, and regulatory reporting.",
+  },
+  "/products/audit-evidence-readiness": {
+    title: "Audit & Evidence Readiness | Proteccio",
+    description:
+      "Learn how Proteccio helps teams centralize evidence and prepare audit-ready compliance packages with full traceability.",
   },
   "/solutions": {
     title: "Solutions | Proteccio",
@@ -327,6 +391,17 @@ function App() {
                   <Route path="industries" element={<Industries />} />
                   <Route path="solutions" element={<Solutions />} />
                   <Route path="products" element={<Products />} />
+                  <Route path="products/data-discovery-classification-dd-dc" element={<ProductDddc />} />
+                  <Route path="products/data-mapping" element={<ProductDataMapping />} />
+                  <Route path="products/records-of-processing-activities-ropa" element={<ProductRopa />} />
+                  <Route path="products/privacy-by-design-for-applications-pbd" element={<ProductApplicationPbd />} />
+                  <Route path="products/new-project-dpia" element={<ProductNewProjectDpia />} />
+                  <Route path="products/third-party-risk-management-tprm" element={<ProductTprm />} />
+                  <Route path="products/free-assessment-tools" element={<ProductFreeTools />} />
+                  <Route path="products/consent-management" element={<ProductConsentManagement />} />
+                  <Route path="products/dsr-request-management" element={<ProductDsrRequest />} />
+                  <Route path="products/data-breach-management" element={<ProductDataBreach />} />
+                  <Route path="products/audit-evidence-readiness" element={<ProductAuditEvidenceReadiness />} />
                   <Route path="resources" element={<Resources />} />
                   <Route path="insights" element={<Insights />} />
                   <Route path="solutions/:solutionId" element={<SolutionDetail />} />

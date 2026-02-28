@@ -68,7 +68,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white pt-28 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-white pt-28 pb-20 relative overflow-hidden">
 
       {/* Ambient Background Effects */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-[#1cd35c]/10 to-transparent pointer-events-none opacity-50 transition-all duration-1000"></div>
@@ -84,7 +84,7 @@ const Contact = () => {
           <h1 className="text-4xl md:text-5xl font-black mb-4">
             Contact <span className="bg-gradient-to-r from-[#1cd35c] via-[#20e066] to-[#25f075] bg-clip-text text-transparent">Proteccio Data</span>
           </h1>
-          <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="mt-6 text-white/60 max-w-2xl mx-auto text-lg leading-relaxed">
             Engage with our privacy and compliance specialists for structured advisory,
             regulatory readiness assessments, and enterprise data governance solutions.
           </p>
@@ -102,7 +102,7 @@ const Contact = () => {
             Trusted by Enterprises & Growing Organizations
           </h3>
 
-          <div className="relative overflow-hidden py-4 border-y border-white/5 bg-white/[0.02]">
+          <div className="relative overflow-hidden py-4 border-y border-white/10 bg-white/[0.02] backdrop-blur-sm rounded-2xl">
             <motion.div
               className="flex whitespace-nowrap gap-16 items-center"
               animate={{
@@ -145,7 +145,7 @@ const Contact = () => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl hover:border-[#1cd35c]/30 transition-colors duration-300 flex-1 flex flex-col justify-center"
+              className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl hover:border-[#1cd35c]/30 transition-colors duration-300 flex-1 flex flex-col justify-center"
             >
               <div className="w-12 h-12 bg-[#1cd35c]/10 rounded-xl flex items-center justify-center mb-6">
                 <ShieldCheck className="w-6 h-6 text-[#1cd35c]" />
@@ -153,7 +153,7 @@ const Contact = () => {
               <h3 className="text-xl font-black mb-3 text-white">
                 Confidential & Secure
               </h3>
-              <p className="text-gray-400 leading-relaxed">
+              <p className="text-white/60 leading-relaxed">
                 All inquiries are handled under strict confidentiality and aligned
                 with Indian and global data protection regulations (GDPR, DPDPA, HIPAA).
               </p>
@@ -164,7 +164,7 @@ const Contact = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="p-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl hover:border-[#1cd35c]/30 transition-colors duration-300 flex-1 flex flex-col justify-center"
+              className="p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl hover:border-[#1cd35c]/30 transition-colors duration-300 flex-1 flex flex-col justify-center"
             >
               <h3 className="text-xl font-black mb-4 text-white">
                 Engagement Areas
@@ -176,7 +176,7 @@ const Contact = () => {
                   "Risk & Impact Assessments",
                   "Incident Response Strategy"
                 ].map((item, idx) => (
-                  <li key={idx} className="flex items-center text-gray-400">
+                  <li key={idx} className="flex items-center text-white/60">
                     <CheckCircle className="w-4 h-4 text-[#1cd35c] mr-3" />
                     {item}
                   </li>
@@ -212,7 +212,7 @@ const Contact = () => {
                       placeholder="Enter first name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-gray-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-white/30"
                     />
                   </div>
 
@@ -225,7 +225,7 @@ const Contact = () => {
                       placeholder="Enter last name"
                       value={formData.lastname}
                       onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-gray-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-white/30"
                     />
                   </div>
                 </div>
@@ -239,7 +239,7 @@ const Contact = () => {
                     placeholder="name@company.com"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-gray-500"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-white/30"
                   />
                 </div>
 
@@ -251,7 +251,7 @@ const Contact = () => {
                     placeholder="Organization name"
                     value={formData.company}
                     onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-gray-500"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm placeholder-white/30"
                   />
                 </div>
 
@@ -271,7 +271,7 @@ const Contact = () => {
                       <option className="bg-gray-900">Technical Advisory</option>
                       <option className="bg-gray-900">Partnership Discussion</option>
                     </select>
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/40">
                       <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -288,7 +288,7 @@ const Contact = () => {
                     placeholder="How can we help you?"
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm resize-none placeholder-gray-500"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-[#1cd35c] transition-all text-sm resize-none placeholder-white/30"
                   />
                 </div>
 
@@ -297,11 +297,11 @@ const Contact = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isLoading}
-                  className="w-full py-5 bg-[#1cd35c] text-black font-black rounded-xl text-sm uppercase tracking-widest hover:shadow-[0_0_20px_rgba(28,211,92,0.4)] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
+                  className="w-full py-5 bg-[#1cd35c] text-white font-black rounded-xl text-sm uppercase tracking-widest hover:bg-[#19b850] hover:shadow-[0_0_20px_rgba(28,211,92,0.4)] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed mt-2"
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                       Processing...
                     </span>
                   ) : (
@@ -328,7 +328,7 @@ const Contact = () => {
                         <CheckCircle className="w-8 h-8 text-[#1cd35c]" />
                       </div>
                       <h3 className="text-2xl font-black text-white mb-2">Message Sent!</h3>
-                      <p className="text-gray-400 mb-6 max-w-xs mx-auto">
+                      <p className="text-white/60 mb-6 max-w-xs mx-auto">
                         Thank you for contacting Proteccio Data. A member of our team
                         will respond within one business day.
                       </p>
